@@ -64,11 +64,13 @@ SubShader {
   				float3 vpos=mul((float3x3)_Object2World, v.vertex.xyz);
  				float4 worldCoord=float4(_Object2World._m03,_Object2World._m13,_Object2World._m23,1);
 				float4 viewPos=mul(UNITY_MATRIX_V,worldCoord)+float4(((float3x3)UNITY_MATRIX_V,vpos),0);
+				
 				float4 outPos=mul(UNITY_MATRIX_P,viewPos);
 				o.pos = UnityPixelSnap (outPos);
                
                 return o;
             }
+
 
             fixed4 frag(v2f i) : COLOR 
             {
@@ -86,8 +88,7 @@ SubShader {
 				
 				if (angle2<0) angle2=360+angle2; // get angle value 0-360, instead of 0-180
 				
-				float frames = 8; // texture has 8 frames
-				
+				float frames = 8; // texture has 8 frames (side by side images)
 				int index = angle2/45;
 				float s = 1/frames;
 				c = tex2D(_MainTex, float2(i.uv.x*s + s*(index)  ,i.uv.y));

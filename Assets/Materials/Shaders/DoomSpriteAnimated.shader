@@ -94,7 +94,7 @@ SubShader {
 				float s = 1/frames;
 				
 				// animated frames
-				float totalAnimFrames=3;
+				float totalAnimFrames=3; // 3 rows vertically stacked
 				float animFrame= totalAnimFrames-(1+round(_Time.y) % totalAnimFrames);
 				
 				c = tex2D(_MainTex, float2(i.uv.x*s + s*(index)  , (i.uv.y+animFrame)/totalAnimFrames) );
