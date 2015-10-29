@@ -9,11 +9,13 @@ Properties {
 SubShader {
 
     Pass {
-        //Tags {"Queue" = "Geometry" "RenderType" = "Transparent"}
         Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
+
+//		Cull Off
+		Lighting Off
+//		ZWrite Off
         Blend SrcAlpha OneMinusSrcAlpha
-        //Cull off
-       
+                     
         CGPROGRAM
 
 	    #pragma vertex vert
@@ -35,12 +37,9 @@ SubShader {
                 float4 pos : SV_POSITION;
                 half2 uv : TEXCOORD0;
                 float3 normal : TEXCOORD1;
-  //              float3 viewUp : TEXCOORD2;
                 float3 viewRight : TEXCOORD3;
                 float3 viewFront : TEXCOORD4;
             };
-            
-   
 
             float4x4 _CameraToWorld;
 
@@ -63,9 +62,9 @@ SubShader {
                // billboard towards camera
   				float3 vpos=mul((float3x3)_Object2World, v.vertex.xyz);
  				float4 worldCoord=float4(_Object2World._m03,_Object2World._m13,_Object2World._m23,1);
-				float4 viewPos=mul(UNITY_MATRIX_V,worldCoord)+float4(((float3x3)UNITY_MATRIX_V,vpos),0);
+				float4 viewPos=mul(UNITY_MATRIX_V,worldCoord)+float4(vpos,0);//+matr;
 				float4 outPos=mul(UNITY_MATRIX_P,viewPos);
-				o.pos = UnityPixelSnap (outPos);
+				o.pos = UnityPixelSnap (outPos); // pixelsnap is optional
                
                 return o;
             }
@@ -75,23 +74,23 @@ SubShader {
             fixed4 frag(v2f i) : COLOR 
             {
                 i.normal = normalize(i.normal);
-//                i.viewUp = normalize(i.viewUp);
                 i.viewRight = normalize(i.viewRight);
                 i.viewFront = normalize(i.viewFront);
                
-                fixed4 c = 0;
-				float angle2 = (atan2(i.normal.y,i.viewFront.z))*(180/PI);
-				
+                fixed4 c = fixed4(0,0,0,0);
+                
+                // get angle
+				float angle = (atan2(i.normal.y,i.viewFront.z))*(180/PI);
 				float si = i.normal.x * i.viewRight.z - i.viewRight.x * i.normal.z;
 				float co = i.normal.x * i.viewRight.x + i.normal.z * i.viewRight.z;
-				angle2 = atan2(si, co)*(180/PI);
+				angle = atan2(si, co)*(180/PI);
 				
-				if (angle2<0) angle2=360+angle2; // get angle value 0-360, instead of 0-180
+				if (angle<0) angle=360+angle; // get angle value 0-360, instead of 0-180
 				
 				float frames = 8; // texture has 8 frames
 				
-				int index = angle2/45;
-				float s = 1/frames;
+				int index = angle/45;
+				float s = 1/frames; // scalar
 				
 				// animated frames
 				float totalAnimFrames=3; // 3 rows vertically stacked
