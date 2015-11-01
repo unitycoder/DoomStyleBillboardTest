@@ -1,29 +1,29 @@
 ﻿//https://github.com/unitycoder/DoomStyleBillboardTest
 
-Shader "UnityCoder/DoomSprite1" {
+Shader "UnityCoder/DoomSprite1" 
+{
 
-Properties {
-	_MainTex ("Base (RGB)", 2D) = "white" {}
-}
+	Properties 
+	{
+		_MainTex ("Base (RGB)", 2D) = "white" {}
+	}
 
-SubShader {
+	SubShader 
+	{
+    	Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
+    	Blend SrcAlpha OneMinusSrcAlpha		
+	      
+		Pass 
+		{
+	        CGPROGRAM
 
-    Pass {
-        //Tags {"Queue" = "Geometry" "RenderType" = "Transparent"}
-        Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
-        Blend SrcAlpha OneMinusSrcAlpha
-        //Cull off
-       
-        CGPROGRAM
+		    #pragma vertex vert
+		    #pragma fragment frag
+			#define PI 3.1415926535897932384626433832795
+		    #include "UnityCG.cginc"
 
-	    #pragma vertex vert
-	    #pragma fragment frag
-		#pragma fragmentoption ARB_precision_hint_fastest
-		#define PI 3.1415926535897932384626433832795
-	    #include "UnityCG.cginc"
-
-          uniform sampler2D _MainTex;
-          uniform float4 _MainTex_ST;
+			uniform sampler2D _MainTex;
+			uniform float4 _MainTex_ST;
 
             struct appdata {
                 float4 vertex : POSITION;
@@ -38,12 +38,11 @@ SubShader {
                 float3 viewRight : TEXCOORD3;
                 float3 viewFront : TEXCOORD4;
             };
-            
-   
 
             float4x4 _CameraToWorld;
 
-            v2f vert (appdata v) {
+            v2f vert (appdata v) 
+            {
                 v2f o;
                 o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
                 o.normal = float3(0,0,-1); //v.normal; // using fixed normal direction
@@ -68,8 +67,7 @@ SubShader {
                 return o;
             }
 
-
-            fixed4 frag(v2f i) : COLOR 
+            fixed4 frag(v2f i) : SV_Target 
             {
                 i.normal = normalize(i.normal);
                 i.viewRight = normalize(i.viewRight);
@@ -90,8 +88,7 @@ SubShader {
 				c = tex2D(_MainTex, float2(i.uv.x*s + s*(index)  ,i.uv.y));
                 return c;
             }
-
-        ENDCG
-    }
-}
+	        ENDCG
+	    }
+	}
 }
