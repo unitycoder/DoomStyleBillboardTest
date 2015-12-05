@@ -11,10 +11,11 @@ Shader "UnityCoder/DoomSprite2"
 
 	SubShader 
 	{
-    	Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
+    	Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" "DisableBatching"="True"}
     	
+    	ZWrite Off
     	Blend SrcAlpha OneMinusSrcAlpha		
-	      
+	    
 		Pass 
 		{
 	        CGPROGRAM
