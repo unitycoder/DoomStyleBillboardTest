@@ -1,6 +1,6 @@
 ﻿//https://github.com/unitycoder/DoomStyleBillboardTest
 
-Shader "UnityCoder/DoomSprite1" 
+Shader "UnityCoder/DoomSprite" 
 {
 
 	Properties 
