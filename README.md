@@ -11,6 +11,7 @@ http://unitycoder.com/blog/2015/04/06/doom-style-billboard-shader/
 Optimized original DoomSprite1.shader into DoomSprite2.shader.
 Moved all the code into vertex shader and into precalculated defines.
 
+```
 BEFORE
  // Stats for Vertex shader:
  //       d3d11 : 25 math
@@ -30,6 +31,7 @@ BEFORE
  //       d3d11 : 0 math, 1 texture
  //    d3d11_9x : 0 math, 1 texture
  //        d3d9 : 1 math, 1 texture
+```
 
 ## Preview
 ![gif](https://raw.githubusercontent.com/unitycoder/GitImageDump/master/gifs/doom_billboard_sprites.gif)
