@@ -1,22 +1,24 @@
 ﻿//https://github.com/unitycoder/DoomStyleBillboardTest
 
-Shader "UnityCoder/DoomSprite2" 
+Shader "UnityCoder/DoomSpriteAnimated2" 
 {
 
 	Properties 
 	{
 		_MainTex ("Base (RGB)", 2D) = "white" {}
-		_Frames ("Frames", Float) = 8
+		_Frames ("Frames (rows)", Float) = 8
+		_Columns ("Columns", Float) = 3
+		_AnimSpeed ("Animation Speed", Float) = 1
 	}
 
 	SubShader 
 	{
-    	Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
-    	
-    	Blend SrcAlpha OneMinusSrcAlpha		
-	      
-		Pass 
-		{
+        Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
+        
+        Blend SrcAlpha OneMinusSrcAlpha
+        
+	    Pass 
+	    {
 	        CGPROGRAM
 
 		    #pragma vertex vert
@@ -30,19 +32,21 @@ Shader "UnityCoder/DoomSprite2"
 			uniform sampler2D _MainTex;
 			uniform float4 _MainTex_ST;
 
-            struct appdata {
-                float4 vertex : POSITION;
-                float4 texcoord : TEXCOORD0;
-            };
+			struct appdata {
+			    float4 vertex : POSITION;
+			    float4 texcoord : TEXCOORD0;
+			};
 
-            struct v2f {
-                float4 pos : SV_POSITION;
-                half2 uv : TEXCOORD0;
-            };
+			struct v2f {
+			    float4 pos : SV_POSITION;
+			    half2 uv : TEXCOORD0;
+			};
 
-            float4x4 _CameraToWorld;
+			float4x4 _CameraToWorld;
             float _Frames;
-
+            float _Columns;
+            float _AnimSpeed;
+            
             float2 atan2Approximation(float2 y, float2 x) // http://http.developer.nvidia.com/Cg/atan2.html
 			{
 				float2 t0, t1, t2, t3, t4;
@@ -66,8 +70,8 @@ Shader "UnityCoder/DoomSprite2"
 				return t3;
 			}
 
-            v2f vert (appdata v) 
-            {
+			v2f vert (appdata v) 
+			{
                 v2f o;
                 o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
                 
@@ -80,7 +84,11 @@ Shader "UnityCoder/DoomSprite2"
    				float angle = (atan2Approximation(towardsRight.z,towardsRight.x)*RAD2DEG) % 360;
 				int index = angle/SINGLEFRAMEANGLE;
                 
-                o.uv = float2(v.texcoord.x*UVOFFSETX+UVOFFSETX*index,v.texcoord.y);
+   				// animated frames
+				float animFrame= _Columns-(1+round(_Time.y*_AnimSpeed) % _Columns);
+				               
+                // set uv to display current frame
+                o.uv = float2(v.texcoord.x*UVOFFSETX+UVOFFSETX*index,(v.texcoord.y+animFrame)/_Columns);
                           
                // billboard towards camera
   				float3 vpos=mul((float3x3)_Object2World, v.vertex.xyz);
@@ -89,14 +97,15 @@ Shader "UnityCoder/DoomSprite2"
 				float4 outPos=mul(UNITY_MATRIX_P,viewPos);
 				
 				o.pos = UnityPixelSnap(outPos); // uses pixelsnap
-				
+               
                 return o;
-            }
+			}
 
-            fixed4 frag(v2f i) : SV_Target 
-            {
-                return tex2D(_MainTex,i.uv);
-            }
+			fixed4 frag(v2f i) : SV_Target 
+			{
+				return tex2D(_MainTex,i.uv);
+			}
+
 	        ENDCG
 	    }
 	}

@@ -54,7 +54,6 @@ Shader "UnityCoder/DoomSpriteAnimated"
 			    float3 viewFrontW = mul((float3x3)_CameraToWorld, float3(0,0,-_ProjectionParams.x));
 			   
 			    // Convert from world to object space.
-			//              o.viewUp = mul((float3x3)_Object2World, viewUpW);
 			    o.viewRight = mul((float3x3)_Object2World, viewRightW);
 			    o.viewFront = mul((float3x3)_Object2World, viewFrontW);
 			              

@@ -60,7 +60,7 @@ Shader "UnityCoder/DoomSprite"
                // billboard towards camera
   				float3 vpos=mul((float3x3)_Object2World, v.vertex.xyz);
  				float4 worldCoord=float4(_Object2World._m03,_Object2World._m13,_Object2World._m23,1);
-				float4 viewPos=mul(UNITY_MATRIX_V,worldCoord)+float4(vpos,0);;
+				float4 viewPos=mul(UNITY_MATRIX_V,worldCoord)+float4(vpos,0);
 				float4 outPos=mul(UNITY_MATRIX_P,viewPos);
 				o.pos = UnityPixelSnap (outPos);
                
