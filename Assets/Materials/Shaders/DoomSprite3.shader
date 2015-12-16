@@ -1,6 +1,6 @@
 ﻿//https://github.com/unitycoder/DoomStyleBillboardTest
 
-Shader "UnityCoder/DoomSprite2" 
+Shader "UnityCoder/DoomSprite3" 
 {
 
 	Properties 
@@ -62,7 +62,7 @@ Shader "UnityCoder/DoomSprite2"
 				t0 = t0 * t4 + 0.999995630;
 				t3 = t0 * t3;
 				t3 = (abs(y) > abs(x)) ? 1.570796327 - t3 : t3;
-				t3 = (x < 0) ?  3.141592654 - t3 : t3;
+				t3 = (x < 0) ?  PI - t3 : t3;
 				t3 = (y < 0) ? -t3 : t3;
 				return t3;
 			}
@@ -71,19 +71,19 @@ Shader "UnityCoder/DoomSprite2"
             {
                 v2f o;
                 o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
-                
-                // get direction
-   				float3 cameraUp = UNITY_MATRIX_IT_MV[1].xyz;
-				float3 cameraForward = normalize(UNITY_MATRIX_IT_MV[2].xyz);
-				float3 towardsRight = normalize(cross(cameraUp, cameraForward));
-                
-                // get angle & current frame
-   				float angle = (atan2Approximation(towardsRight.z,towardsRight.x)*RAD2DEG) % 360;
+
+                // object world position
+   				float3 objWorldPos=float3(_Object2World._m03,_Object2World._m13,_Object2World._m23);
+
+				// get angle between object and camera
+				float3 fromCameraToObject = normalize(objWorldPos - _WorldSpaceCameraPos.xyz);
+				float angle = atan2Approximation(fromCameraToObject.z, fromCameraToObject.x)*RAD2DEG+180;
+
+				// get current tilesheet frame and feed it to UV
 				int index = angle/SINGLEFRAMEANGLE;
-                
                 o.uv = float2(v.texcoord.x*UVOFFSETX+UVOFFSETX*index,v.texcoord.y);
                           
-               // billboard towards camera
+               // billboard mesh towards camera
   				float3 vpos=mul((float3x3)_Object2World, v.vertex.xyz);
  				float4 worldCoord=float4(_Object2World._m03,_Object2World._m13,_Object2World._m23,1);
 				float4 viewPos=mul(UNITY_MATRIX_V,worldCoord)+float4(vpos,0);
