@@ -12,7 +12,7 @@ Optimized original DoomSprite1.shader into DoomSprite2.shader.
 Moved all the code into vertex shader and into precalculated defines.
 
 ```
-BEFORE
+BEFORE (v1)
  // Stats for Vertex shader:
  //       d3d11 : 25 math
  //    d3d11_9x : 25 math
@@ -22,11 +22,21 @@ BEFORE
  //    d3d11_9x : 38 math, 1 texture
  //        d3d9 : 49 math, 1 texture
  
- AFTER
+ AFTER (v2)
   // Stats for Vertex shader:
  //       d3d11 : 52 math
  //    d3d11_9x : 52 math
  //        d3d9 : 82 math
+ // Stats for Fragment shader:
+ //       d3d11 : 0 math, 1 texture
+ //    d3d11_9x : 0 math, 1 texture
+ //        d3d9 : 1 math, 1 texture
+ 
+ AFTER (v3)
+  // Stats for Vertex shader:
+ //       d3d11 : 44 math
+ //    d3d11_9x : 44 math
+ //        d3d9 : 71 math
  // Stats for Fragment shader:
  //       d3d11 : 0 math, 1 texture
  //    d3d11_9x : 0 math, 1 texture
